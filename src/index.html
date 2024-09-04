@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Informatie</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .pokemon-info {
+            margin-top: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 50%;
+            margin-top: 20px;
+        }
+        p {
+            color: #666;
+        }
+        .type-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #f0ad4e;
+            color: white;
+            border-radius: 5px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Zoek Pokémon Informatie</h1>
+    <input type="text" id="pokemonName" placeholder="Voer Pokémon naam in">
+    <button onclick="fetchPokemonInfo()">Zoek Pokémon</button>
+    <div class="pokemon-info" id="pokemonInfo"></div>
+</div>
+
+<script>
+    function fetchPokemonInfo() {
+        const pokemonName = $('#pokemonName').val().toLowerCase();
+        const apiUrl = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
+
+        $.ajax({
+            url: apiUrl,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                displayPokemonInfo(data);
+            },
+            error: function() {
+                $('#pokemonInfo').html('<p>Pokémon niet gevonden. Probeer het opnieuw.</p>');
+            }
+        });
+    }
+
+    function displayPokemonInfo(pokemonData) {
+        const types = pokemonData.types.map(typeInfo => typeInfo.type.name).join(', ');
+        const infoHtml = `
+            <h2>${pokemonData.name}</h2>
+            <img src="${pokemonData.sprites.front_default}" alt="${pokemonData.name}">
+            <p><strong>Type:</strong> ${types}</p>
+            <p><strong>Gewicht:</strong> ${pokemonData.weight}</p>
+            <p><strong>Hoogte:</strong> ${pokemonData.height}</p>
+        `;
+        $('#pokemonInfo').html(infoHtml);
+    }
+</script>
+
+</body>
+</html>
